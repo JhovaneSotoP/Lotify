@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>800</width>
+    <height>600</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1400</width>
+    <height>900</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout_2">
+    <item row="0" column="0">
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QStackedWidget" name="stackedWidget">
+        <widget class="QWidget" name="form1Tablas">
+         <widget class="QLabel" name="label">
+          <property name="geometry">
+           <rect>
+            <x>230</x>
+            <y>240</y>
+            <width>471</width>
+            <height>161</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Se ingresa la informacion necesaria para generar la distribucion de las tablas</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QWidget" name="seleccionarImagenes">
+         <widget class="QLabel" name="label_2">
+          <property name="geometry">
+           <rect>
+            <x>100</x>
+            <y>290</y>
+            <width>551</width>
+            <height>81</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Permite seleccionar las imagenes define el nombre de las tarjetas y el numero que tendran</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QWidget" name="caracteristicasCartas">
+         <widget class="QLabel" name="label_3">
+          <property name="geometry">
+           <rect>
+            <x>230</x>
+            <y>180</y>
+            <width>271</width>
+            <height>61</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Define las caracteristicas de las tarjetas</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QWidget" name="cargaCartas">
+         <widget class="QLabel" name="label_4">
+          <property name="geometry">
+           <rect>
+            <x>60</x>
+            <y>260</y>
+            <width>401</width>
+            <height>51</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Muestra el porcentaje de carga del procesamiento de la imagenes</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QWidget" name="form2Tablas">
+         <widget class="QLabel" name="label_5">
+          <property name="geometry">
+           <rect>
+            <x>270</x>
+            <y>210</y>
+            <width>291</width>
+            <height>51</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Define los ajustes finales de la salida del archivo</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QWidget" name="cargaFinal">
+         <widget class="QLabel" name="label_6">
+          <property name="geometry">
+           <rect>
+            <x>230</x>
+            <y>270</y>
+            <width>341</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>muestra procentaje de carga la salida del archivo final</string>
+          </property>
+         </widget>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
