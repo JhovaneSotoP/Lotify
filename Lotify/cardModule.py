@@ -19,11 +19,24 @@ class lotteryCard():
         self.tipoLetra="arial.ttf"
         self.tamanoLetra=15
 
-        self.orientacionInferior="L"
+        self.orientacionInferior="C"
         self.espaciadoHInferior=10
-        self.espaciadoVInferior=10
+        self.espaciadoVInferior=15
+        self.grosorBordeInferior=2
+        self.colorBordeInferior="#000000"
 
-        self.textoInferior="Jhovane"
+        self.textoInferior="DRAGON"
+        self.colorTextoInferior="#FFFFFF"
+
+
+        self.orientacionSuperior="R"
+        self.espaciadoHSuperior=10
+        self.espaciadoVSuperior=10
+        self.grosorBordeSuperior=1
+        self.colorBordeSuperior="#FFFFFF"
+
+        self.textoSuperior="69"
+        self.colorTextoSuperior="#000000"
 
         #actualizar
         self.actualizarImagenSalida()
@@ -37,8 +50,10 @@ class lotteryCard():
         if self.fondo!="":
             self.colocarFondo()
         
-        self.colocarBordePrincipal()
         self.colocarTextoInferior()
+        self.colocarTextoSuperior()
+        self.colocarBordePrincipal()
+
 
     
     def actualizarImagen(self,path):
@@ -84,18 +99,62 @@ class lotteryCard():
         draw=ImageDraw.Draw(self.imagen)
         font=ImageFont.truetype(self.tipoLetra,self.tamanoLetra)
 
+        tam=font.getbbox(self.textoInferior)
+        tamX=tam[2]-tam[0]
+        tamY=tam[3]-tam[1]
+
+        posY=self.alto-tamY-self.espaciadoVInferior
 
         if self.orientacionInferior=="L":
-            pass
+            posX=self.espaciadoHInferior
         elif self.orientacionInferior=="C":
-            pass
+            posX=(self.ancho-tamX)//2
         elif self.orientacionInferior=="R":
-            pass
+            posX=self.ancho-tamX-self.espaciadoHInferior
+        
+        grosor=self.grosorBordeInferior
 
+        for dx in range(-grosor,grosor+1):
+            for dy in range(-grosor,grosor+1):
+                draw.text((posX + dx, posY + dy), self.textoInferior, font=font, fill=self.colorBordeInferior)
 
-        draw.text((0,0),self.textoInferior,fill="Black",font=font)
+        draw.text((posX,posY),self.textoInferior,fill=self.colorTextoInferior,font=font)
+    
+
+    def colocarTextoSuperior(self):
+        """
+        Coloca el texto superior respetando lo siguiente:
+        1. Cadena enviada
+        2. Tipo y tamaño de letra elegido
+        3. Orientación
+        4. Espaciado
+        """
+        draw=ImageDraw.Draw(self.imagen)
+        font=ImageFont.truetype(self.tipoLetra,self.tamanoLetra)
+
+        tam=font.getbbox(self.textoSuperior)
+        tamX=tam[2]-tam[0]
+        tamY=tam[3]-tam[1]
+
+        posY=self.espaciadoVSuperior
+
+        if self.orientacionSuperior=="L":
+            posX=self.espaciadoHSuperior
+        elif self.orientacionSuperior=="C":
+            posX=(self.ancho-tamX)//2
+        elif self.orientacionSuperior=="R":
+            posX=self.ancho-tamX-self.espaciadoHSuperior
+        
+        grosor=self.grosorBordeSuperior
+
+        for dx in range(-grosor,grosor+1):
+            for dy in range(-grosor,grosor+1):
+                draw.text((posX + dx, posY + dy), self.textoSuperior, font=font, fill=self.colorBordeSuperior)
+
+        draw.text((posX,posY),self.textoSuperior,fill=self.colorTextoSuperior,font=font)
+
 
 if __name__=="__main__":
     prueba=lotteryCard()
-    prueba.actualizarImagen(r"C:\Users\adria\OneDrive\Escritorio\WhatsApp Image 2024-09-10 at 6.35.09 PM.jpeg")
+    prueba.actualizarImagen(r"C:\Users\adria\Downloads\Designer.jpeg")
     prueba.imagen.show()
