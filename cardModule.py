@@ -62,6 +62,141 @@ class lotteryCard():
         """
         self.fondo=path
         self.actualizarImagenSalida()
+    
+    
+    def actualizarDimensiones(self,size):
+        """
+        Actualiza las dimenciones de ancho y alto y llama a actualizar la imagen final.
+        """
+        self.ancho=size[0]
+        self.alto=size[1]
+        self.actualizarImagenSalida()
+    
+    def actualizarColorBordePrincipal(self,color):
+        """
+        Actualiza el color del borde principal y llama a actualizar la imagen final.
+        """
+        self.colorBordePrincipal=color
+        self.actualizarImagenSalida()
+    
+    def actualizarGrosorBordePrincipal(self,grosor):
+        """
+        Actualiza el color del borde principal y llama a actualizar la imagen final.
+        """
+        self.grosoeBordePrincipal=grosor
+        self.actualizarImagenSalida()
+
+    def actualizarTipoLetra(self,letra):
+        """
+        Actualiza el tipo de letra y llama a actualizar la imagen final.
+        """
+        self.tipoLetra=letra
+        self.actualizarImagenSalida()
+    
+    def actualizarTamanoLetra(self,tamano):
+        """
+        Actualiza el tipo de letra y llama a actualizar la imagen final.
+        """
+        self.tamanoLetra=tamano
+        self.actualizarImagenSalida()
+    
+    def actualizarOrientacionInferior(self,orientacion):
+        """
+        Actualiza la orientacion del texto inferior y llama a actualizar la imagen final.
+        """
+        self.orientacionInferior=orientacion
+        self.actualizarImagenSalida()
+    
+    def actualizarEspaciadoHInferior(self,espaciado):
+        """
+        Actualiza el espaciado horizontal del texto inferior y llama a actualizar la imagen final.
+        """
+        self.espaciadoHInferior=espaciado
+        self.actualizarImagenSalida()
+    
+    def actualizarEspaciadoVInferior(self,espaciado):
+        """
+        Actualiza el espaciado vertical del texto inferior y llama a actualizar la imagen final.
+        """
+        self.espaciadoVInferior=espaciado
+        self.actualizarImagenSalida()
+    
+    def actualizarGrosorBordeInferior(self,grosor):
+        """
+        Actualiza el grosor del borde del texto inferior y llama a actualizar la imagen final.
+        """
+        self.grosorBordeInferior=grosor
+        self.actualizarImagenSalida()
+    
+    def actualizarColorBordeInferior(self,color):
+        """
+        Actualiza el color del borde del texto inferior y llama a actualizar la imagen final.
+        """
+        self.colorBordeInferior=color
+        self.actualizarImagenSalida()
+
+    def actualizarColorTextoInferior(self,color):
+        """
+        Actualiza el color del texto inferior y llama a actualizar la imagen final.
+        """
+        self.colorTextoInferior=color
+        self.actualizarImagenSalida()
+
+    def actualizarTextoInferior(self,texto):
+        """
+        Actualiza el texto inferior y llama a actualizar la imagen final.
+        """
+        self.textoInferior=texto
+        self.actualizarImagenSalida()
+        
+    def actualizarOrientacionSuperior(self,orientacion):
+        """
+        Actualiza la orientacion del texto Superior y llama a actualizar la imagen final.
+        """
+        self.orientacionSuperior=orientacion
+        self.actualizarImagenSalida()
+    
+    def actualizarEspaciadoHSuperior(self,espaciado):
+        """
+        Actualiza el espaciado horizontal del texto Superior y llama a actualizar la imagen final.
+        """
+        self.espaciadoHSuperior=espaciado
+        self.actualizarImagenSalida()
+    
+    def actualizarEspaciadoVSuperior(self,espaciado):
+        """
+        Actualiza el espaciado vertical del texto Superior y llama a actualizar la imagen final.
+        """
+        self.espaciadoVSuperior=espaciado
+        self.actualizarImagenSalida()
+    
+    def actualizarGrosorBordeSuperior(self,grosor):
+        """
+        Actualiza el grosor del borde del texto Superior y llama a actualizar la imagen final.
+        """
+        self.grosorBordeSuperior=grosor
+        self.actualizarImagenSalida()
+    
+    def actualizarColorBordeSuperior(self,color):
+        """
+        Actualiza el color del borde del texto Superior y llama a actualizar la imagen final.
+        """
+        self.colorBordeSuperior=color
+        self.actualizarImagenSalida()
+
+    def actualizarColorTextoSuperior(self,color):
+        """
+        Actualiza el color del texto Superior y llama a actualizar la imagen final.
+        """
+        self.colorTextoSuperior=color
+        self.actualizarImagenSalida()
+
+    def actualizarTextoSuperior(self,texto):
+        """
+        Actualiza el texto Superior y llama a actualizar la imagen final.
+        """
+        self.textoSuperior=texto
+        self.actualizarImagenSalida()
 
     def colocarFondo(self):
         """
