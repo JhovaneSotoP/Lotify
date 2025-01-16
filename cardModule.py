@@ -148,7 +148,7 @@ class lotteryCard():
         """
         self.textoInferior=texto
         self.actualizarImagenSalida()
-        
+
     def actualizarOrientacionSuperior(self,orientacion):
         """
         Actualiza la orientacion del texto Superior y llama a actualizar la imagen final.
