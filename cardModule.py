@@ -5,7 +5,7 @@ class lotteryCard():
         """
         Inicializar clase que definira los parametros de la tarjeta de loteria.
         """
-
+        self.contador=0
         #datos que se deberan de actualizar
         self.ancho=200
         self.alto=300
@@ -287,9 +287,18 @@ class lotteryCard():
                 draw.text((posX + dx, posY + dy), self.textoSuperior, font=font, fill=self.colorBordeSuperior)
 
         draw.text((posX,posY),self.textoSuperior,fill=self.colorTextoSuperior,font=font)
+    
+    def guardar(self):
+        ruta="data/Output/"+str(self.contador)+".png"
+        self.imagen.save(ruta)
+        self.contador+=1
+        return ruta
+
 
 
 if __name__=="__main__":
     prueba=lotteryCard()
     prueba.actualizarImagen(r"C:\Users\adria\Downloads\Designer.jpeg")
     prueba.imagen.show()
+    prueba.guardar()
+
