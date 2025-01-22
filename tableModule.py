@@ -9,7 +9,7 @@ class lotteryTable():
         """
         self.ancho=8.5
         self.alto=11
-        self.ppp=300
+        self.ppp=96
 
         self.elementosLado=4
         self.bordeImpresion=0.25
@@ -26,7 +26,7 @@ class lotteryTable():
         self.encabezado="Loteria"
 
         self.tipoLetra="arial.ttf"
-        self.tamanoLetra=90
+        self.tamanoLetra=24
         self.colorLetra="#000000"
 
         self.contadorTabla=1
@@ -146,6 +146,98 @@ class lotteryTable():
         """
         self.fondo=path
         self.actualizarMiniatura()
+    
+    def actualizarSize(self, size):
+        """
+        Actualiza el tamaño de la hoja.
+
+        Args:
+            size(tuple):tupla con ancho y alto.
+        """
+        self.ancho=size[0]
+        self.alto=size[1]
+        self.actualizarMiniatura()
+    
+    def actualizarElementosLado(self, cant):
+        """
+        Actualiza el numero de elementos por lado que tendra la cudricula de cada tabla.
+
+        Args:
+            cant(int): cantidad de elementos por lado.
+        """
+        self.elementosLado=cant
+        self.actualizarMiniatura()
+    
+    def actualizarBordeImpresion(self, borde):
+        """
+        Actualiza el tamaño del borde de impresion.
+
+        Args:
+            borde(float): Tamaño en pulgadas del borde de impresion.
+        """
+        self.bordeImpresion=borde
+        self.actualizarMiniatura()
+    
+    def actualizarEspaciadoCartas(self, borde):
+        """
+        Actualiza el tamaño del espaciado entre cartas.
+
+        Args:
+            borde(float): Tamaño en pulgadas del espaciado entre cartas.
+        """
+        self.espaciadoCartas=borde
+        self.actualizarMiniatura()
+    
+    def actualizarEspacioHeader(self, espacio):
+        """
+        Actualiza el tamaño del espaciado del encabezado.
+
+        Args:
+            espacio(float): Tamaño en pulgadas del espaciado del encabezado.
+        """
+        self.espacioHeader=espacio
+        self.actualizarMiniatura()
+    
+    def actualizarEncabezado(self, texto):
+        """
+        Actualiza la cadena del encabezado.
+
+        Args:
+            texto(string): Cadena que reemplaza lo contenido en el encabezado.
+        """
+        self.encabezado=texto
+        self.actualizarMiniatura()
+    
+    def actualizarLetraEncabezado(self, letra):
+        """
+        Actualiza la cadena que almacena el tipo de letra TrueType del encabezado.
+
+        Args:
+            letra(string): Tipo de letra del encabezado.
+        """
+        self.encabezado=letra
+        self.actualizarMiniatura()
+    
+    def actualizarTamanoLetraEncabezado(self, tam):
+        """
+        Actualiza el tamaño de la letra del encabezado.
+
+        Args:
+            tam(int): Tamaño de letra del encabezado.
+        """
+        self.tamanoLetra=tam
+        self.actualizarMiniatura()
+    
+    def actualizarColorLetraEncabezado(self, color):
+        """
+        Actualiza el color de la letra del encabezado.
+
+        Args:
+            color(string): Color de letra del encabezado.
+        """
+        self.tamanoLetra=color
+        self.actualizarMiniatura()
+
             
 
 
