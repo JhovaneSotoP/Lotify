@@ -1,6 +1,6 @@
 from PIL import Image,ImageDraw, ImageOps, ImageFont
-import reportlab
 import random
+from reportlab.pdfgen import canvas
 
 class lotteryTable():
     def __init__(self):
@@ -31,6 +31,15 @@ class lotteryTable():
 
         self.contadorTabla=1
 
+        self.bordeCartas=0.2
+        self.escalaCarta=1.3
+        self.cartas=[]
+
+        self.noTablas=1
+        self.instrucciones=True
+        self.demo=True
+        self.salida="data/output/"
+
         self.actualizarMiniatura()
 
     def actualizarMiniatura(self):
@@ -38,7 +47,7 @@ class lotteryTable():
         Actualiza la miniatura de la tabla.
         """
         #Crear imagen
-        self.imagen=Image.new("RGBA",(int(self.ancho*self.ppp),int(self.alto*self.ppp)),self.colorLetra)
+        self.imagen=Image.new("RGBA",(int(self.ancho*self.ppp),int(self.alto*self.ppp)),"#FFFFFF")
 
         #Crear dibujante y generar las coordenadas de las cartas
         dibujo=ImageDraw.Draw(self.imagen)
@@ -237,6 +246,82 @@ class lotteryTable():
         """
         self.tamanoLetra=color
         self.actualizarMiniatura()
+    
+    def actualizarBordeCartas(self, borde):
+        """
+        Actualiza el borde entre cartas.
+
+        Args:
+            borde(float): Espaciado entre cartas.
+        """
+        self.espaciadoCartas=borde
+    
+    def actualizarCartas(self, cartas):
+        """
+        Actualiza las cartas.
+
+        Args:
+            cartas(list): Cartas de loteria.
+        """
+        self.cartas=cartas
+    
+    def realY(self,num):
+        return (self.alto*72)-num
+    
+    def generarLoteria(self):
+        path=self.salida+"archivo.pdf"
+        ancho=self.ancho*72
+        alto=self.alto*72
+        self.archivo=canvas.Canvas(path,pagesize=(ancho,alto))
+        self.colocarCartas()
+    
+    def colocarCartas(self):
+        bordeCartas=self.bordeCartas*72
+        ancho=self.anchoCartas*self.escalaCarta*72
+        alto=self.altoCartas*self.escalaCarta*72
+
+        bordeImpresion=self.bordeImpresion*72
+
+        x=bordeImpresion-(ancho+(2*bordeCartas))
+        y=self.realY(bordeImpresion)-alto
+
+        #colocar cartas
+        for n in self.cartas:
+            
+            x+=ancho+(bordeCartas*2)
+
+            if(x+(bordeCartas*2)+(bordeImpresion*2))+ancho>(self.ancho*72):
+                print(f"{(x+(bordeCartas*2)+(bordeImpresion*2)+ancho)} con {self.ancho*72}")
+                x=bordeImpresion
+                y-=(alto+(bordeCartas*2))
+            
+            if(y-bordeImpresion)<0:
+                x=bordeImpresion
+                y=self.realY(bordeImpresion)-alto
+                self.archivo.showPage()
+            self.archivo.drawImage(n,x+bordeCartas,y-bordeCartas,ancho,alto)
+
+            #colocae punteado
+            x1=x
+            x2=ancho+x+(2*bordeCartas)
+            
+            y1=y-(bordeCartas*2)
+            y2=y1+(2*bordeCartas)+alto
+
+            self.archivo.setDash(3,3)
+
+            #linea inferior
+            self.archivo.line(x1,y1,x2,y1)
+            #linea superior
+            self.archivo.line(x1,y2,x2,y2)
+            #linea lateral izquierda
+            self.archivo.line(x1,y1,x1,y2)
+            #linea lateral derecha
+            self.archivo.line(x2,y1,x2,y2)
+
+
+    
+
 
             
 
@@ -244,6 +329,12 @@ class lotteryTable():
 
 if __name__=="__main__":
     prueba=lotteryTable()
-    prueba.actualizarLogo(r"C:\Users\adria\OneDrive\Imágenes\Capturas de pantalla\Captura de pantalla 2024-12-07 185929.png")
-    prueba.actualizarFondo(r"C:\Users\adria\OneDrive\Imágenes\Capturas de pantalla\Captura de pantalla 2024-12-07 194413.png")
-    prueba.imagen.show()
+    #prueba.imagen.show()
+
+    listaT=[]
+    for n in range(20):
+        listaT.append(r"C:\Users\adria\Documents\Desarrollo\Python\Lotify\data\Output\0.png")
+    
+    prueba.actualizarCartas(listaT)
+    prueba.generarLoteria()
+    prueba.archivo.save()
