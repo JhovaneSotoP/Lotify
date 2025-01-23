@@ -1,6 +1,10 @@
 from PIL import Image,ImageDraw, ImageOps, ImageFont
 import random
 from reportlab.pdfgen import canvas
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfbase import pdfmetrics
+from reportlab.lib import colors
+from generalFuntions_module import encontrar_archivo_fuente,hex_to_rgb
 
 class lotteryTable():
     def __init__(self):
@@ -25,7 +29,7 @@ class lotteryTable():
         self.fondo=""
         self.encabezado="Loteria"
 
-        self.tipoLetra="arial.ttf"
+        self.tipoLetra=encontrar_archivo_fuente("Arial")
         self.tamanoLetra=24
         self.colorLetra="#000000"
 
@@ -224,7 +228,9 @@ class lotteryTable():
         Args:
             letra(string): Tipo de letra del encabezado.
         """
-        self.encabezado=letra
+        path=encontrar_archivo_fuente(letra)
+        if(path):
+            self.tipoLetra=path
         self.actualizarMiniatura()
     
     def actualizarTamanoLetraEncabezado(self, tam):
@@ -265,17 +271,25 @@ class lotteryTable():
         """
         self.cartas=cartas
     
+
     def realY(self,num):
         return (self.alto*72)-num
     
     def generarLoteria(self):
+        """
+        Genera la loteria con los parametros definidos.
+        """
         path=self.salida+"archivo.pdf"
         ancho=self.ancho*72
         alto=self.alto*72
         self.archivo=canvas.Canvas(path,pagesize=(ancho,alto))
         self.colocarCartas()
+        
     
     def colocarCartas(self):
+        """
+        Coloca las cartas en hojas con el formato requerido para imprimir
+        """
         bordeCartas=self.bordeCartas*72
         ancho=self.anchoCartas*self.escalaCarta*72
         alto=self.altoCartas*self.escalaCarta*72
@@ -291,7 +305,6 @@ class lotteryTable():
             x+=ancho+(bordeCartas*2)
 
             if(x+(bordeCartas*2)+(bordeImpresion*2))+ancho>(self.ancho*72):
-                print(f"{(x+(bordeCartas*2)+(bordeImpresion*2)+ancho)} con {self.ancho*72}")
                 x=bordeImpresion
                 y-=(alto+(bordeCartas*2))
             
@@ -318,7 +331,55 @@ class lotteryTable():
             self.archivo.line(x1,y1,x1,y2)
             #linea lateral derecha
             self.archivo.line(x2,y1,x2,y2)
+    
+    def agregarTabla(self,indices):
+        ppp=72
+        self.archivo.showPage()
+        random.shuffle(indices)
+        
+        #colocar fondo
+        if(self.fondo!=""):
+            try:
+                fondo = Image.open(self.fondo)
+                fondo=ImageOps.fit(fondo,(int(self.ancho*ppp),int(self.alto*ppp)))
+                path="data/Output/fondo.png"
+                fondo.save(path)
+                x = 0
+                y = self.realY(0)
+                self.archivo.drawImage(path,0,0,self.ancho*ppp,self.alto*ppp)
+            except FileNotFoundError:
+                print(f"El archivo '{self.logo}' no se encuentra.")
+            except PermissionError:
+                print(f"Permiso denegado al intentar acceder al archivo '{self.logo}'.")
+            except Exception as e:
+                print(f"Error inesperado: {e}")
+        
+         #colocar encabezado
+        pdfmetrics.registerFont(TTFont("Fuente", self.tipoLetra))
 
+        self.archivo.setFont("Fuente", self.tamanoLetra)
+        rgb=hex_to_rgb(self.colorLetra)
+        self.archivo.setFillColorRGB(*rgb)
+
+        y=(self.alto*ppp)-(self.bordeImpresion*ppp)-(((self.espacioHeader*ppp)+(self.tamanoLetra))//2)
+        self.archivo.drawString(self.bordeImpresion*ppp, y, self.encabezado)
+        
+        cad="Tabla #"+str(self.contadorTabla)
+        
+        ancho=pdfmetrics.stringWidth(cad,"Fuente",self.tamanoLetra)
+        x=(self.ancho*ppp)-ancho-(self.bordeImpresion*ppp)
+        
+        self.archivo.drawString(x, y, cad)
+
+        #modificar al lienzo las coordenadas
+        coordsPX=[]
+        for n in self.coords:
+            coordsPX.append((n[0]*ppp,(n[1]*ppp)-(self.espacioHeader*ppp)-(self.espaciadoCartas*ppp)))
+        
+        for indice,k in enumerate(coordsPX):
+            self.archivo.drawImage(self.cartas[indices[indice]],k[0],k[1],self.anchoCartas*ppp,self.altoCartas*ppp)
+        
+        self.contadorTabla+=1
 
     
 
@@ -329,12 +390,16 @@ class lotteryTable():
 
 if __name__=="__main__":
     prueba=lotteryTable()
+    prueba.actualizarFondo(r"C:\Users\adria\Downloads\WhatsApp Image 2024-12-03 at 9.41.54 PM.jpeg")
     #prueba.imagen.show()
 
     listaT=[]
     for n in range(20):
         listaT.append(r"C:\Users\adria\Documents\Desarrollo\Python\Lotify\data\Output\0.png")
     
+    
+
     prueba.actualizarCartas(listaT)
     prueba.generarLoteria()
+    prueba.agregarTabla([0, 1, 3, 4, 6, 7, 8, 9, 11, 12, 13, 14, 15, 17, 18, 19])
     prueba.archivo.save()
