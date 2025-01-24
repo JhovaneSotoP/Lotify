@@ -106,6 +106,7 @@ class lotteryTable():
         if(self.logo!=""):
             try:
                 logo = Image.open(self.logo)
+                logo=logo.convert("RGBA")
                 logo.thumbnail((int(self.ancho * self.ppp/3), int(self.espacioHeader * self.ppp)))
                 x = ((self.imagen.width) - logo.width) // 2
                 y = int(self.bordeImpresion * self.ppp)
@@ -361,7 +362,7 @@ class lotteryTable():
         rgb=hex_to_rgb(self.colorLetra)
         self.archivo.setFillColorRGB(*rgb)
 
-        y=(self.alto*ppp)-(self.bordeImpresion*ppp)-(((self.espacioHeader*ppp)+(self.tamanoLetra))//2)
+        y=(self.alto*ppp)-(self.bordeImpresion*ppp)-(self.espacioHeader*ppp)+(((self.espacioHeader*ppp)-(self.tamanoLetra*0.8))/2)
         self.archivo.drawString(self.bordeImpresion*ppp, y, self.encabezado)
         
         cad="Tabla #"+str(self.contadorTabla)
@@ -376,8 +377,35 @@ class lotteryTable():
         for n in self.coords:
             coordsPX.append((n[0]*ppp,(n[1]*ppp)-(self.espacioHeader*ppp)-(self.espaciadoCartas*ppp)))
         
+        #colocar imagenes
         for indice,k in enumerate(coordsPX):
             self.archivo.drawImage(self.cartas[indices[indice]],k[0],k[1],self.anchoCartas*ppp,self.altoCartas*ppp)
+        
+
+        #Colocar logo
+        if(self.logo!=""):
+            try:
+                logo = Image.open(self.logo)
+                logo.thumbnail((int(self.ancho * ppp/3), int(self.espacioHeader * ppp)))
+                path="data/Output/logo.png"
+                logo.save(path)
+                x = ((self.ancho*ppp)-(logo.width))//2
+                y = (self.alto*ppp)-(self.bordeImpresion*ppp)-(self.espacioHeader*ppp)+(((self.espacioHeader*ppp)-logo.height)/2)
+                self.archivo.drawImage(path,x,y,logo.width,logo.height)
+            except FileNotFoundError:
+                print(f"El archivo '{self.logo}' no se encuentra.")
+            except PermissionError:
+                print(f"Permiso denegado al intentar acceder al archivo '{self.logo}'.")
+            except Exception as e:
+                print(f"Error inesperado: {e}")
+        #marcar borde de impresion
+        """ x1=0
+        x2=self.ancho*ppp
+        y1=(self.alto*ppp)-(self.bordeImpresion*ppp)
+        y2=y1-(self.espacioHeader*ppp)
+
+        self.archivo.line(x1,y1,x2,y1)
+        self.archivo.line(x1,y2,x2,y2) """
         
         self.contadorTabla+=1
 
@@ -390,8 +418,8 @@ class lotteryTable():
 
 if __name__=="__main__":
     prueba=lotteryTable()
-    prueba.actualizarFondo(r"C:\Users\adria\Downloads\WhatsApp Image 2024-12-03 at 9.41.54 PM.jpeg")
-    #prueba.imagen.show()
+    prueba.actualizarLogo(r"C:\Users\adria\Downloads\WhatsApp Image 2024-12-03 at 9.41.54 PM.jpeg")
+    prueba.imagen.show()
 
     listaT=[]
     for n in range(20):
