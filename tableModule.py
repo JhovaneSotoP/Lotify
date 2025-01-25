@@ -251,7 +251,7 @@ class lotteryTable():
         Args:
             color(string): Color de letra del encabezado.
         """
-        self.tamanoLetra=color
+        self.colorLetra=color
         self.actualizarMiniatura()
     
     def actualizarBordeCartas(self, borde):
