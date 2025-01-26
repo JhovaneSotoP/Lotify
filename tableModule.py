@@ -42,7 +42,6 @@ class lotteryTable():
         self.noTablas=1
         self.instrucciones=True
         self.demo=True
-        self.salida="data/output/"
 
         self.actualizarMiniatura()
 
@@ -276,11 +275,10 @@ class lotteryTable():
     def realY(self,num):
         return (self.alto*72)-num
     
-    def generarLoteria(self):
+    def generarLoteria(self,path="data/output/archivo.pdf"):
         """
         Genera la loteria con los parametros definidos.
         """
-        path=self.salida+"archivo.pdf"
         ancho=self.ancho*72
         alto=self.alto*72
         self.archivo=canvas.Canvas(path,pagesize=(ancho,alto))

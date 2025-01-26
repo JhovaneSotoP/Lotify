@@ -1,6 +1,6 @@
 import sys
 import os
-from PyQt5.QtWidgets import QApplication, QMainWindow, QStackedWidget, QPushButton,QDoubleSpinBox,QSpinBox,QFileDialog,QLabel,QColorDialog,QLineEdit, QFontComboBox,QTableWidget,QTableWidgetItem
+from PyQt5.QtWidgets import QApplication, QMainWindow, QStackedWidget, QPushButton,QDoubleSpinBox,QSpinBox,QFileDialog,QLabel,QColorDialog,QLineEdit, QFontComboBox,QTableWidget,QTableWidgetItem, QProgressBar
 from PyQt5 import uic
 from PyQt5.QtCore import QThread,pyqtSignal,Qt
 from PyQt5.QtGui import QPixmap
@@ -8,10 +8,15 @@ from tableModule import lotteryTable
 from cardModule import lotteryCard
 import os
 import random
+import math
+from generalFuntions_module import indextablas
 
 loteria=lotteryTable()
 dataBrutaCartas=[]
 carta=lotteryCard()
+pathCartas=[]
+pathSalida=""
+
 #HILOS
 class hiloMiniaturaTabla(QThread):
     """
@@ -90,6 +95,45 @@ class hiloMiniaturaCarta(QThread):
 
         carta.imagen.save("data/Output/miniaturaCarta.png")
 
+class generarCartas(QThread):
+    progresoText=pyqtSignal(str)
+    progresoInt=pyqtSignal(int)
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+    def run(self):
+        global pathCartas
+        pathCartas=[]
+        max=len(dataBrutaCartas)
+        self.progresoText.emit("Iniciando la generacion de cartas")
+        for index,card in enumerate(dataBrutaCartas):
+            carta.actualizarImagen(card["path"])
+            carta.actualizarTextoSuperior(card["numero"])
+            carta.actualizarTextoInferior(card["titulo"])
+            pathCartas.append(carta.guardar())
+            self.progresoText.emit(f"{index+1}/{max} cartas generadas.")
+            self.progresoInt.emit(int((index+1)*100/max))
+
+class hiloGenerarLoteria(QThread):
+    progresoText=pyqtSignal(str)
+    progresoInt=pyqtSignal(int)
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+    
+    def run(self):
+        self.progresoText.emit("Comenzando...")
+        loteria.generarLoteria(pathSalida)
+        self.progresoText.emit("Generando tablas")
+        index=indextablas(loteria.noTablas,len(pathCartas),(loteria.elementosLado*loteria.elementosLado))
+        for index,n in enumerate(index):
+            loteria.agregarTabla(n)
+            self.progresoInt.emit(int((index+1)*100/loteria.noTablas))
+            self.progresoText.emit(f"{index+1}/{loteria.noTablas} tablas colocadas.")
+        loteria.archivo.save()
+
+
 
         
 
@@ -121,7 +165,7 @@ class MainWindow(QMainWindow):
         self.findChild(QPushButton,"btnSalir3").clicked.connect(self.exit)
 
         #Configuracion de cartas
-        self.findChild(QPushButton,"btnContinuar3").clicked.connect(self.nextIndexStacked)
+        self.findChild(QPushButton,"btnContinuar3").clicked.connect(self.procesarImagenes)
         self.findChild(QPushButton,"btnSalir4").clicked.connect(self.exit)
 
 
@@ -274,7 +318,30 @@ class MainWindow(QMainWindow):
         self.orientacionTextoCartas(self.value_orientacionAbajo,self.item_izquierdaAbajo,self.item_centroAbajo,self.item_derechaAbajo)
         
         self.item_miniaturaCarta=self.findChild(QLabel,"previsualizacionCarta")
+
+        #GUI PROCESAR CARTAS
+
+        self.item_progresoCarta=self.findChild(QLabel,"labelCargaCarta")
+        self.item_barraProgresoCarta=self.findChild(QProgressBar,"barraCargaCarta")
         
+        #GUI CONFIGURACION FINAL
+        self.item_noTablas=self.findChild(QSpinBox,"numeroTablas")
+        self.item_bordeCartas=self.findChild(QDoubleSpinBox,"bordeCartas")
+        self.item_escalaCartas=self.findChild(QDoubleSpinBox,"escalaCartas")
+        self.item_salida=self.findChild(QPushButton,"seleccionarSalida")
+        self.item_pathSalida=self.findChild(QLabel,"pathSalida")
+        self.item_salida.clicked.connect(self.seleccionarPathSalida)
+
+        self.item_btnTerminar=self.findChild(QPushButton,"terminar")
+        self.item_btnTerminar.clicked.connect(self.generarLoteria)
+        
+        self.item_btnTerminar.setEnabled(False)
+
+        #GUI carga final
+
+        self.item_progresoTabla=self.findChild(QLabel,"labelCargaArchivo")
+        self.item_barraProgresoTabla=self.findChild(QProgressBar,"barraCargaArchivo")
+
         
     def nextIndexStacked(self):
         """
@@ -439,7 +506,8 @@ class MainWindow(QMainWindow):
             return salida[0]
     
     def tablaActualizada(self):
-        if self.item_tablaImagenes.rowCount()>0:
+        max=self.item_elementosLado.value()*self.item_elementosLado.value()
+        if self.item_tablaImagenes.rowCount()>max:
             self.item_continuarImportacion.setEnabled(True)
         else:
             self.item_continuarImportacion.setEnabled(False)
@@ -627,7 +695,66 @@ class MainWindow(QMainWindow):
         self.item_miniaturaCarta.setPixmap(scaled_pixmap)
 
 
+    def procesarImagenes(self):
+        self.nextIndexStacked()
+        hilo=generarCartas()
+        hilo.finished.connect(self.configuracionFinal)
+        hilo.progresoText.connect(self.actualizarEtiquetaCargaCarta)
+        hilo.progresoInt.connect(self.actualizarBarraCargaCarta)
+        hilo.start()
+        hilo.wait()
 
+    def actualizarEtiquetaCargaCarta(self,cad:str):
+        self.item_progresoCarta.setText(cad)
+    def actualizarBarraCargaCarta(self,num:int):
+        self.item_barraProgresoCarta.setValue(num)
+
+    def configuracionFinal(self):
+        self.nextIndexStacked()
+        cartasMax=math.comb(len(pathCartas),loteria.noTablas*loteria.noTablas)
+        self.item_noTablas.setMaximum(cartasMax)
+        if cartasMax>200:
+            self.item_noTablas.setValue(200)
+        else:
+            self.item_noTablas.setValue(cartasMax)
+        loteria.actualizarCartas(pathCartas)
+
+    def seleccionarPathSalida(self):
+        path=QFileDialog.getSaveFileName(self,"Guardar como","","Archivos PDF (*.pdf)")
+        global pathSalida
+        if path==('', ''):
+            pathSalida=""
+            self.item_btnTerminar.setEnabled(False)
+        else:
+            pathSalida=path[0]
+            self.item_btnTerminar.setEnabled(True)
+
+        self.item_pathSalida.setText(pathSalida)    
+
+    def generarLoteria(self):
+        loteria.noTablas=self.item_noTablas.value()
+        loteria.escalaCarta=self.item_escalaCartas.value()
+        loteria.espaciadoCartas=self.item_espaciadoCartas.value()
+        #print("Estoy dentro")
+        self.nextIndexStacked()
+        hilo=hiloGenerarLoteria()
+        hilo.finished.connect(self.terminado)
+        hilo.progresoText.connect(self.actualizarCadProgresoTabla)
+        hilo.progresoInt.connect(self.actualizarIntProgresoTabla)
+        hilo.start()
+        hilo.wait()
+
+    def actualizarCadProgresoTabla(self,cad:str):
+        self.item_progresoTabla.setText(cad)
+    def actualizarIntProgresoTabla(self,num:int):
+        self.item_barraProgresoTabla.setValue(num)
+
+    def terminado(self):
+        global pathCartas
+        for n in pathCartas:
+            os.remove(n)
+        pathCartas=[]
+        self.stacked.setCurrentIndex(0)
 
 app=QApplication(sys.argv)
 window=MainWindow()
