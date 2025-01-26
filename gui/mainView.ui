@@ -38,7 +38,7 @@
       <item row="0" column="0">
        <widget class="QStackedWidget" name="stackedWidget">
         <property name="currentIndex">
-         <number>1</number>
+         <number>3</number>
         </property>
         <widget class="QWidget" name="inicio">
          <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -731,7 +731,14 @@
                </widget>
               </item>
               <item row="1" column="1">
-               <widget class="QSpinBox" name="tamanoLetraCarta"/>
+               <widget class="QSpinBox" name="tamanoLetraCarta">
+                <property name="minimum">
+                 <number>1</number>
+                </property>
+                <property name="value">
+                 <number>32</number>
+                </property>
+               </widget>
               </item>
               <item row="1" column="0">
                <widget class="QLabel" name="label">
@@ -780,7 +787,11 @@
                </widget>
               </item>
               <item row="0" column="3">
-               <widget class="QSpinBox" name="anchoBordeGeneral"/>
+               <widget class="QSpinBox" name="anchoBordeGeneral">
+                <property name="value">
+                 <number>5</number>
+                </property>
+               </widget>
               </item>
               <item row="0" column="0">
                <widget class="QLabel" name="label_40">
@@ -825,10 +836,21 @@
                </widget>
               </item>
               <item row="1" column="3">
-               <widget class="QSpinBox" name="anchoBordeArriba"/>
+               <widget class="QSpinBox" name="anchoBordeArriba">
+                <property name="value">
+                 <number>2</number>
+                </property>
+               </widget>
               </item>
               <item row="2" column="3">
-               <widget class="QSpinBox" name="anchoBordeArriba_2"/>
+               <widget class="QSpinBox" name="anchoBordeArriba_2">
+                <property name="value">
+                 <number>2</number>
+                </property>
+                <property name="displayIntegerBase">
+                 <number>10</number>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
@@ -881,7 +903,11 @@
             <item>
              <layout class="QGridLayout" name="gridLayout_6">
               <item row="0" column="1">
-               <widget class="QDoubleSpinBox" name="horizontalArriba"/>
+               <widget class="QDoubleSpinBox" name="horizontalArriba">
+                <property name="value">
+                 <double>10.000000000000000</double>
+                </property>
+               </widget>
               </item>
               <item row="0" column="2">
                <widget class="QLabel" name="label_23">
@@ -898,7 +924,11 @@
                </widget>
               </item>
               <item row="0" column="3">
-               <widget class="QDoubleSpinBox" name="verticalArriba"/>
+               <widget class="QDoubleSpinBox" name="verticalArriba">
+                <property name="value">
+                 <double>10.000000000000000</double>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
@@ -937,7 +967,11 @@
             <item>
              <layout class="QGridLayout" name="gridLayout_8">
               <item row="0" column="1">
-               <widget class="QDoubleSpinBox" name="horizontalAbajo"/>
+               <widget class="QDoubleSpinBox" name="horizontalAbajo">
+                <property name="value">
+                 <double>10.000000000000000</double>
+                </property>
+               </widget>
               </item>
               <item row="0" column="2">
                <widget class="QLabel" name="label_26">
@@ -954,7 +988,11 @@
                </widget>
               </item>
               <item row="0" column="3">
-               <widget class="QDoubleSpinBox" name="verticalAbajo"/>
+               <widget class="QDoubleSpinBox" name="verticalAbajo">
+                <property name="value">
+                 <double>25.000000000000000</double>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>

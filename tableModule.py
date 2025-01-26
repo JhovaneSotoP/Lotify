@@ -409,6 +409,9 @@ class lotteryTable():
         
         self.contadorTabla+=1
 
+    def sizeCartas(self):
+        data=(self.anchoCartas,self.altoCartas)
+        return data
     
 
 

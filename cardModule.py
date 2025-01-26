@@ -1,4 +1,5 @@
 from PIL import Image, ImageDraw, ImageOps, ImageFont
+from generalFuntions_module import encontrar_archivo_fuente
 
 class lotteryCard():
     def __init__(self):
@@ -68,8 +69,8 @@ class lotteryCard():
         """
         Actualiza las dimenciones de ancho y alto y llama a actualizar la imagen final.
         """
-        self.ancho=size[0]
-        self.alto=size[1]
+        self.ancho=int(size[0]*200)
+        self.alto=int(size[1]*200)
         self.actualizarImagenSalida()
     
     def actualizarColorBordePrincipal(self,color):
@@ -90,7 +91,7 @@ class lotteryCard():
         """
         Actualiza el tipo de letra y llama a actualizar la imagen final.
         """
-        self.tipoLetra=letra
+        self.tipoLetra=encontrar_archivo_fuente(letra)
         self.actualizarImagenSalida()
     
     def actualizarTamanoLetra(self,tamano):

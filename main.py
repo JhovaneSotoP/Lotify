@@ -5,10 +5,13 @@ from PyQt5 import uic
 from PyQt5.QtCore import QThread,pyqtSignal,Qt
 from PyQt5.QtGui import QPixmap
 from tableModule import lotteryTable
+from cardModule import lotteryCard
 import os
 import random
 
 loteria=lotteryTable()
+dataBrutaCartas=[]
+carta=lotteryCard()
 #HILOS
 class hiloMiniaturaTabla(QThread):
     """
@@ -39,6 +42,53 @@ class hiloMiniaturaTabla(QThread):
         loteria.actualizarTamanoLetraEncabezado(self.data["tamanoLetra"])
         loteria.actualizarColorLetraEncabezado(self.data["colorLetra"])
         loteria.imagen.save("data/Output/miniaturaTabla.png")
+
+
+class hiloMiniaturaCarta(QThread):
+    """
+    Hilo secundario que actualiza las caracteristicas de la carta, ademas que genera y guarda una miniatura.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.data = None
+    
+    def setData(self,data):
+        self.data=data
+
+    def run(self):
+        """
+        Inicio de la funcion para actualizar parametros de la loteria.
+        """
+        card=random.choice(dataBrutaCartas)
+        carta.actualizarImagen(card["path"])
+        carta.actualizarTextoSuperior(card["numero"])
+        carta.actualizarTextoInferior(card["titulo"])
+        
+        carta.actualizarDimensiones(self.data["size"])
+        carta.actualizarTipoLetra(self.data["tipoLetraCarta"])
+        carta.actualizarTamanoLetra(self.data["tamanoLetraCarta"])
+        carta.actualizarColorTextoSuperior(self.data["colorLetraCartaArriba"])
+        carta.actualizarColorTextoInferior(self.data["colorLetraCartaAbajo"])
+
+        carta.actualizarColorBordePrincipal(self.data["colorBordeGeneral"])
+        carta.actualizarColorBordeSuperior(self.data["colorBordeArriba"])
+        carta.actualizarColorBordeInferior(self.data["colorBordeAbajo"])
+
+        carta.actualizarGrosorBordePrincipal(self.data["anchoBordeGeneral"])
+        carta.actualizarGrosorBordeSuperior(self.data["anchoBordeArriba"])
+        carta.actualizarGrosorBordeInferior(self.data["anchoBordeArriba_2"])
+
+        carta.actualizarOrientacionSuperior(self.data["orientacionArriba"])
+        carta.actualizarOrientacionInferior(self.data["orientacionAbajo"])
+
+        carta.actualizarEspaciadoHSuperior(self.data["horizontalArriba"])
+        carta.actualizarEspaciadoHInferior(self.data["horizontalAbajo"])
+
+        carta.actualizarEspaciadoVSuperior(self.data["verticalArriba"])
+        carta.actualizarEspaciadoVInferior(self.data["verticalAbajo"])
+
+        carta.imagen.save("data/Output/miniaturaCarta.png")
 
 
         
@@ -141,6 +191,89 @@ class MainWindow(QMainWindow):
         self.item_continuarImportacion=self.findChild(QPushButton,"btnContinuar2")
         self.item_continuarImportacion.clicked.connect(self.continuarImportacion)
         self.item_continuarImportacion.setEnabled(False)
+
+        #GUI de configuracion de cartas
+        self.item_tipoLetraCarta=self.findChild(QFontComboBox,"tipoLetraCarta")
+        self.item_tamanoLetraCarta=self.findChild(QSpinBox,"tamanoLetraCarta")
+
+        self.item_colorLetraCartaArriba=self.findChild(QPushButton,"colorLetraCartaArriba")
+        self.item_colorLetraCartaAbajo=self.findChild(QPushButton,"colorLetraCartaAbajo")
+
+        self.item_colorBordeGeneral=self.findChild(QPushButton,"colorBordeGeneral")
+        self.item_colorBordeArriba=self.findChild(QPushButton,"colorBordeArriba")
+        self.item_colorBordeAbajo=self.findChild(QPushButton,"colorBordeAbajo")
+
+        self.item_anchoBordeGeneral=self.findChild(QSpinBox,"anchoBordeGeneral")
+        self.item_anchoBordeArriba=self.findChild(QSpinBox,"anchoBordeArriba")
+        self.item_anchoBordeArriba_2=self.findChild(QSpinBox,"anchoBordeArriba_2")
+
+        self.item_izquierdaArriba=self.findChild(QPushButton,"izquierdaArriba")
+        self.item_centroArriba=self.findChild(QPushButton,"centroArriba")
+        self.item_derechaArriba=self.findChild(QPushButton,"derechaArriba")
+
+        self.item_horizontalArriba=self.findChild(QDoubleSpinBox,"horizontalArriba")
+        self.item_verticalArriba=self.findChild(QDoubleSpinBox,"verticalArriba")
+
+        self.item_izquierdaAbajo=self.findChild(QPushButton,"izquierdaAbajo")
+        self.item_centroAbajo=self.findChild(QPushButton,"centroAbajo")
+        self.item_derechaAbajo=self.findChild(QPushButton,"derechaAbajo")
+
+        self.item_horizontalAbajo=self.findChild(QDoubleSpinBox,"horizontalAbajo")
+        self.item_verticalAbajo=self.findChild(QDoubleSpinBox,"verticalAbajo")
+
+        self.item_tipoLetraCarta.currentFontChanged.connect(self.actualizarComponentesCarta)
+
+        self.item_tamanoLetraCarta.valueChanged.connect(self.actualizarComponentesCarta)
+
+        self.item_anchoBordeGeneral.valueChanged.connect(self.actualizarComponentesCarta)
+        self.item_anchoBordeArriba.valueChanged.connect(self.actualizarComponentesCarta)
+        self.item_anchoBordeArriba_2.valueChanged.connect(self.actualizarComponentesCarta)
+
+        self.item_horizontalArriba.valueChanged.connect(self.actualizarComponentesCarta)
+        self.item_verticalArriba.valueChanged.connect(self.actualizarComponentesCarta)
+
+        self.item_horizontalAbajo.valueChanged.connect(self.actualizarComponentesCarta)
+        self.item_verticalAbajo.valueChanged.connect(self.actualizarComponentesCarta)
+
+
+        self.value_colorLetraCartaArriba="#000000"
+        self.value_colorLetraCartaAbajo="#000000"
+
+        self.value_colorBordeGeneral="#000000"
+        self.value_colorBordeArriba="#FFFFFF"
+        self.value_colorBordeAbajo="#FFFFFF"
+
+
+
+        self.item_colorLetraCartaArriba.clicked.connect(self.actualizar_colorLetraCartaArriba)
+        self.item_colorLetraCartaAbajo.clicked.connect(self.actualizar_colorLetraCartaAbajo)
+
+        self.item_colorBordeGeneral.clicked.connect(self.actualizar_colorBordeGeneral)
+        self.item_colorBordeArriba.clicked.connect(self.actualizar_colorBordeArriba)
+        self.item_colorBordeAbajo.clicked.connect(self.actualizar_colorBordeAbajo)
+
+        self.item_izquierdaArriba.clicked.connect(self.actualizar_izquierdaArriba)
+        self.item_centroArriba.clicked.connect(self.actualizar_centroArriba)
+        self.item_derechaArriba.clicked.connect(self.actualizar_derechaArriba)
+
+        self.item_izquierdaAbajo.clicked.connect(self.actualizar_izquierdaAbajo)
+        self.item_centroAbajo.clicked.connect(self.actualizar_centroAbajo)
+        self.item_derechaAbajo.clicked.connect(self.actualizar_derechaAbajo)
+
+        self.cambiarFondoBoton(self.item_colorLetraCartaArriba,self.value_colorLetraCartaArriba)
+        self.cambiarFondoBoton(self.item_colorLetraCartaAbajo,self.value_colorLetraCartaAbajo)
+
+        self.cambiarFondoBoton(self.item_colorBordeGeneral,self.value_colorBordeGeneral)
+        self.cambiarFondoBoton(self.item_colorBordeArriba,self.value_colorBordeArriba)
+        self.cambiarFondoBoton(self.item_colorBordeAbajo,self.value_colorBordeAbajo)
+
+        self.value_orientacionArriba="R"
+        self.value_orientacionAbajo="C"
+
+        self.orientacionTextoCartas(self.value_orientacionArriba,self.item_izquierdaArriba,self.item_centroArriba,self.item_derechaArriba)
+        self.orientacionTextoCartas(self.value_orientacionAbajo,self.item_izquierdaAbajo,self.item_centroAbajo,self.item_derechaAbajo)
+        
+        self.item_miniaturaCarta=self.findChild(QLabel,"previsualizacionCarta")
         
         
     def nextIndexStacked(self):
@@ -163,8 +296,8 @@ class MainWindow(QMainWindow):
         self.hiloMiniaturaTabla.finished.connect(self.actualizarMiniaturaTabla)
 
         self.actualizarComponentesTabla()
-
-        self.dataBrutaCartas=[]
+        global dataBrutaCartas
+        dataBrutaCartas=[]
 
     def actualizarComponentesTabla(self):
         """
@@ -346,9 +479,153 @@ class MainWindow(QMainWindow):
                 print(data)
                 continue
             
-            self.dataBrutaCartas.append(dic)
-        print(self.dataBrutaCartas)
+            dataBrutaCartas.append(dic)
         self.nextIndexStacked()
+
+        
+        self.hiloMiniaturaCarta=hiloMiniaturaCarta()
+        self.hiloMiniaturaCarta.finished.connect(self.actualizarMiniaturaCarta)
+        self.actualizarComponentesCarta()
+    
+    def actualizarComponentesCarta(self):
+        data={}
+        
+        data.update({"size":loteria.sizeCartas()})
+        data.update({"tipoLetraCarta":self.item_tipoLetraCarta.currentText()})
+        data.update({"tamanoLetraCarta":self.item_tamanoLetraCarta.value()})
+
+        data.update({"colorLetraCartaArriba":self.value_colorLetraCartaArriba})
+        data.update({"colorLetraCartaAbajo":self.value_colorLetraCartaAbajo})
+
+        data.update({"colorBordeGeneral":self.value_colorBordeGeneral})
+        data.update({"colorBordeArriba":self.value_colorBordeArriba})
+        data.update({"colorBordeAbajo":self.value_colorBordeAbajo})
+
+        data.update({"anchoBordeGeneral":self.item_anchoBordeGeneral.value()})
+        data.update({"anchoBordeArriba":self.item_anchoBordeArriba.value()})
+        data.update({"anchoBordeArriba_2":self.item_anchoBordeArriba_2.value()})
+
+        data.update({"orientacionArriba":self.value_orientacionArriba})
+
+        data.update({"horizontalArriba":self.item_horizontalArriba.value()})
+        data.update({"verticalArriba":self.item_verticalArriba.value()})
+
+        data.update({"orientacionAbajo":self.value_orientacionAbajo})
+
+        data.update({"horizontalAbajo":self.item_horizontalAbajo.value()})
+        data.update({"verticalAbajo":self.item_verticalAbajo.value()})
+
+        self.hiloMiniaturaCarta.setData(data)
+        self.hiloMiniaturaCarta.start()
+
+
+
+
+    
+    
+    def actualizar_colorLetraCartaArriba(self):
+        temp=self.seleccionarColor()
+        if temp:
+            self.value_colorLetraCartaArriba=temp
+        self.cambiarFondoBoton(self.item_colorLetraCartaArriba,self.value_colorLetraCartaArriba)
+        self.actualizarComponentesCarta()
+
+    def actualizar_colorLetraCartaAbajo(self):
+        temp=self.seleccionarColor()
+        if temp:
+            self.value_colorLetraCartaAbajo=temp
+        self.cambiarFondoBoton(self.item_colorLetraCartaAbajo,self.value_colorLetraCartaAbajo)
+        self.actualizarComponentesCarta()
+        
+    def actualizar_colorBordeGeneral(self):
+        temp=self.seleccionarColor()
+        if temp:
+            self.value_colorBordeGeneral=temp
+        self.cambiarFondoBoton(self.item_colorBordeGeneral,self.value_colorBordeGeneral)
+        self.actualizarComponentesCarta()
+        
+    def actualizar_colorBordeArriba(self):
+        temp=self.seleccionarColor()
+        if temp:
+            self.value_colorBordeArriba=temp
+        self.cambiarFondoBoton(self.item_colorBordeArriba,self.value_colorBordeArriba)
+        self.actualizarComponentesCarta()
+        
+    def actualizar_colorBordeAbajo(self):
+        temp=self.seleccionarColor()
+        if temp:
+            self.value_colorBordeAbajo=temp
+        self.cambiarFondoBoton(self.item_colorBordeAbajo,self.value_colorBordeAbajo)
+        self.actualizarComponentesCarta()
+        
+
+
+
+
+
+    def actualizar_izquierdaArriba(self):
+
+        self.value_orientacionArriba="L"
+        self.orientacionTextoCartas(self.value_orientacionArriba,self.item_izquierdaArriba,self.item_centroArriba,self.item_derechaArriba)
+        self.actualizarComponentesCarta()
+        
+    def actualizar_centroArriba(self):
+        self.value_orientacionArriba="C"
+        self.orientacionTextoCartas(self.value_orientacionArriba,self.item_izquierdaArriba,self.item_centroArriba,self.item_derechaArriba)
+        self.actualizarComponentesCarta()
+        
+    def actualizar_derechaArriba(self):
+        self.value_orientacionArriba="R"
+        self.orientacionTextoCartas(self.value_orientacionArriba,self.item_izquierdaArriba,self.item_centroArriba,self.item_derechaArriba)
+        self.actualizarComponentesCarta()
+        
+
+
+
+
+    def actualizar_izquierdaAbajo(self):
+        self.value_orientacionAbajo="L"
+        self.orientacionTextoCartas(self.value_orientacionAbajo,self.item_izquierdaAbajo,self.item_centroAbajo,self.item_derechaAbajo)
+        self.actualizarComponentesCarta()
+        
+    def actualizar_centroAbajo(self):
+        self.value_orientacionAbajo="C"
+        self.orientacionTextoCartas(self.value_orientacionAbajo,self.item_izquierdaAbajo,self.item_centroAbajo,self.item_derechaAbajo)
+        self.actualizarComponentesCarta()
+        
+    def actualizar_derechaAbajo(self):
+        
+        self.value_orientacionAbajo="R"
+        self.orientacionTextoCartas(self.value_orientacionAbajo,self.item_izquierdaAbajo,self.item_centroAbajo,self.item_derechaAbajo)
+        self.actualizarComponentesCarta()
+        
+    def orientacionTextoCartas(self,valor:str,itemL:QPushButton,itemC:QPushButton,itemR:QPushButton):
+        colorResalte="#DCDCDC"
+        color="#FFFFFF"
+
+        if valor=="L":
+            self.cambiarFondoBoton(itemL,colorResalte)
+            self.cambiarFondoBoton(itemC,color)
+            self.cambiarFondoBoton(itemR,color)
+        elif valor=="C":
+            self.cambiarFondoBoton(itemL,color)
+            self.cambiarFondoBoton(itemC,colorResalte)
+            self.cambiarFondoBoton(itemR,color)
+        elif valor=="R":
+            self.cambiarFondoBoton(itemL,color)
+            self.cambiarFondoBoton(itemC,color)
+            self.cambiarFondoBoton(itemR,colorResalte)
+    
+    def actualizarMiniaturaCarta(self):
+        """
+        Actualzia en la seccion configuracionde tabla su miniatura.
+        """
+        ruta="data/Output/miniaturaCarta.png"
+
+        pixmap = QPixmap(ruta)  # Reemplaza con la ruta de tu imagen
+        scaled_pixmap = pixmap.scaled(self.item_miniaturaCarta.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        self.item_miniaturaCarta.setPixmap(scaled_pixmap)
+
 
 
 

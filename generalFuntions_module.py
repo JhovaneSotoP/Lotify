@@ -25,7 +25,7 @@ def encontrar_archivo_fuente(nombre_fuente):
             lista.append(fuente)
     lista.sort(key=len)
     if lista==[]:
-        return None
+        return encontrar_archivo_fuente("Arial")
     else:
         return lista[0]
 
