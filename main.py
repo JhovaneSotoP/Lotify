@@ -6,31 +6,37 @@ from PyQt5.QtCore import QThread,pyqtSignal,Qt
 from PyQt5.QtGui import QPixmap
 from tableModule import lotteryTable
 
-
+loteria=lotteryTable()
 #HILOS
 class hiloMiniaturaTabla(QThread):
+    """
+    Hilo secundario que actualiza las caracteristicas de la loteria, ademas que genera y guarda una miniatura.
+    """
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.data = None
-        self.miniatura=lotteryTable()
     
     def setData(self,data):
         self.data=data
 
     def run(self):
-        self.miniatura.actualizarSize(self.data['Size'])
-        self.miniatura.actualizarElementosLado(self.data["elementosLado"])
-        self.miniatura.actualizarBordeImpresion(self.data['bordeImpresion'])
-        self.miniatura.actualizarEspaciadoCartas(self.data['espacioCartas'])
-        self.miniatura.actualizarEspacioHeader(self.data["encabezadoAltura"])
-        self.miniatura.actualizarLogo(self.data['pathLogo'])
-        self.miniatura.actualizarFondo(self.data['pathFondo'])
-        self.miniatura.actualizarEncabezado(self.data['titulo'])
-        self.miniatura.actualizarLetraEncabezado(self.data["tipoLetra"])
-        self.miniatura.actualizarTamanoLetraEncabezado(self.data["tamanoLetra"])
-        self.miniatura.actualizarColorLetraEncabezado(self.data["colorLetra"])
-        self.miniatura.imagen.save("data/Output/miniaturaTabla.png")
+        """
+        Inicio de la funcion para actualizar parametros de la loteria.
+        """
+        global loteria
+        loteria.actualizarSize(self.data['Size'])
+        loteria.actualizarElementosLado(self.data["elementosLado"])
+        loteria.actualizarBordeImpresion(self.data['bordeImpresion'])
+        loteria.actualizarEspaciadoCartas(self.data['espacioCartas'])
+        loteria.actualizarEspacioHeader(self.data["encabezadoAltura"])
+        loteria.actualizarLogo(self.data['pathLogo'])
+        loteria.actualizarFondo(self.data['pathFondo'])
+        loteria.actualizarEncabezado(self.data['titulo'])
+        loteria.actualizarLetraEncabezado(self.data["tipoLetra"])
+        loteria.actualizarTamanoLetraEncabezado(self.data["tamanoLetra"])
+        loteria.actualizarColorLetraEncabezado(self.data["colorLetra"])
+        loteria.imagen.save("data/Output/miniaturaTabla.png")
 
 
         
@@ -118,6 +124,8 @@ class MainWindow(QMainWindow):
         self.item_tamanoLetraTabla.valueChanged.connect(self.actualizarComponentesTabla)
 
         self.item_labelTabla=self.findChild(QLabel,"previsualizacionTabla")
+
+        #HUI
         
     def nextIndexStacked(self):
         """
@@ -162,6 +170,9 @@ class MainWindow(QMainWindow):
         self.hiloMiniaturaTabla.start()
     
     def actualizarMiniaturaTabla(self):
+        """
+        Actualzia en la seccion configuracionde tabla su miniatura.
+        """
         ruta="data/Output/miniaturaTabla.png"
 
         pixmap = QPixmap(ruta)  # Reemplaza con la ruta de tu imagen
@@ -169,6 +180,9 @@ class MainWindow(QMainWindow):
         self.item_labelTabla.setPixmap(scaled_pixmap)
     
     def seleccionarLogoPath(self):
+        """
+        Selecciona el logo de la tabla
+        """
         temp=self.seleccionarImagen()
         if temp:
             self.logoPath=temp
@@ -180,6 +194,9 @@ class MainWindow(QMainWindow):
         self.actualizarComponentesTabla()
     
     def seleccionarFondoPath(self):
+        """
+        Selecciona el fondo de cada tabla
+        """
         temp=self.seleccionarImagen()
         if temp:
             self.fondoPath=temp
@@ -191,6 +208,12 @@ class MainWindow(QMainWindow):
         self.actualizarComponentesTabla()
         
     def seleccionarImagen(self):
+        """
+        Funcion que abre un dialogo para seleccionar imagenes (JPG y PNG) y retorna su path.
+
+        Return:
+        salida(str): path que dirige a la imagen seleccionada.
+        """
         salida=QFileDialog.getOpenFileName(self,"Seleccionar imagen","","Imagenes (*.jpg *.png)")
         if salida==('', ''):
             return None
@@ -198,6 +221,9 @@ class MainWindow(QMainWindow):
             return salida[0]
     
     def seleccionarColorLetraTabla(self):
+        """
+        Actualiza el color de la letra de la tabla.
+        """
         temp=self.seleccionarColor()
         if temp:
             self.colorDeLetraTabla=temp
@@ -206,6 +232,12 @@ class MainWindow(QMainWindow):
         
     
     def seleccionarColor(self):
+        """
+        Funcion que abre un dialogo para seleccionar colores y retorna su hexadecimal.
+
+        Return:
+        salida(str): Hexadecimal del color seleccionado.
+        """
         color=QColorDialog.getColor()
         if color.isValid():
             salida=color.name()
@@ -214,6 +246,9 @@ class MainWindow(QMainWindow):
         return salida
     
     def cambiarFondoBoton(self,boton:QPushButton,color:str):
+        """
+        Cambia el color del fondo del boton enviado.
+        """
         boton.setStyleSheet(f"background:{color};")
 
 
