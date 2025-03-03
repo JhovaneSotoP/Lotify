@@ -8,8 +8,8 @@ class lotteryCard():
         """
         self.contador=0
         #datos que se deberan de actualizar
-        self.ancho=200
-        self.alto=300
+        self.ancho=400
+        self.alto=600
         
         self.fondo=""
 
@@ -33,7 +33,7 @@ class lotteryCard():
         self.orientacionSuperior="R"
         self.espaciadoHSuperior=10
         self.espaciadoVSuperior=10
-        self.grosorBordeSuperior=1
+        self.grosorBordeSuperior=3
         self.colorBordeSuperior="#FFFFFF"
 
         self.textoSuperior="69"

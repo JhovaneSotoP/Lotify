@@ -15,8 +15,9 @@ Antes de empezar, asegúrate de tener lo siguiente instalado en tu sistema:
 - Imagenes PNG o JPG. 
 
 ## **Puntos por mejorar**
-- Corregir error al no elegir el path de imagenes a usar.
-- Mejorar el borde del texto de las imagenes.
-- Mejorar UI.
-- Agregar modo para generar instrucciones de juego y un demo.
-- Centrar las imagenes de las cartas individuales en el archivo final.
+- [x] Corregir error al no elegir el path de imagenes a usar.
+- [x] Mejorar el borde del texto de las imagenes (Esperando para mejorar calidad de textos).
+- [ ] Mejorar UI.
+- [ ] Agregar modo para generar instrucciones de juego y un demo.
+- [ ] Centrar las imagenes de las cartas individuales en el archivo final.
+- [x] Corregir error de progreso.

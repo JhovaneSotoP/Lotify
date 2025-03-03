@@ -470,27 +470,28 @@ class MainWindow(QMainWindow):
     
     def importarImagenes(self):
         data=self.seleccionarImagenesPath()
-        for n in data:
-            count=self.item_tablaImagenes.rowCount()
-            self.item_tablaImagenes.insertRow(count)
-            temp=os.path.splitext(os.path.basename(n))[0]
-            temp=temp.split("_")
+        if data:
+            for n in data:
+                count=self.item_tablaImagenes.rowCount()
+                self.item_tablaImagenes.insertRow(count)
+                temp=os.path.splitext(os.path.basename(n))[0]
+                temp=temp.split("_")
 
-            self.item_tablaImagenes.setItem(count,0,QTableWidgetItem(temp[0]))
+                self.item_tablaImagenes.setItem(count,0,QTableWidgetItem(temp[0]))
 
-            if len(temp)>1:
-                try:
-                    datoPrueba=int(temp[1])
-                    dato2=temp[1]
+                if len(temp)>1:
+                    try:
+                        datoPrueba=int(temp[1])
+                        dato2=temp[1]
 
-                except:
+                    except:
+                        dato2=""
+                else: 
                     dato2=""
-            else: 
-                dato2=""
-            
-            self.item_tablaImagenes.setItem(count,1,QTableWidgetItem(dato2))
-            self.item_tablaImagenes.setItem(count,2,QTableWidgetItem(n))
-        self.item_tablaImagenes.resizeColumnsToContents()
+                
+                self.item_tablaImagenes.setItem(count,1,QTableWidgetItem(dato2))
+                self.item_tablaImagenes.setItem(count,2,QTableWidgetItem(n))
+            self.item_tablaImagenes.resizeColumnsToContents()
     
     def seleccionarImagenesPath(self):
         """
@@ -500,6 +501,7 @@ class MainWindow(QMainWindow):
         salida(list): lista de path que dirige a las imagenes seleccionadas.
         """
         salida=QFileDialog.getOpenFileNames(self,"Seleccionar imagen","","Imagenes (*.jpg *.png)")
+        print(salida)
         if salida==([], ''):
             return None
         else:
@@ -697,12 +699,11 @@ class MainWindow(QMainWindow):
 
     def procesarImagenes(self):
         self.nextIndexStacked()
-        hilo=generarCartas()
-        hilo.finished.connect(self.configuracionFinal)
-        hilo.progresoText.connect(self.actualizarEtiquetaCargaCarta)
-        hilo.progresoInt.connect(self.actualizarBarraCargaCarta)
-        hilo.start()
-        hilo.wait()
+        self.hiloP=generarCartas()
+        self.hiloP.finished.connect(self.configuracionFinal)
+        self.hiloP.progresoText.connect(self.actualizarEtiquetaCargaCarta)
+        self.hiloP.progresoInt.connect(self.actualizarBarraCargaCarta)
+        self.hiloP.start()
 
     def actualizarEtiquetaCargaCarta(self,cad:str):
         self.item_progresoCarta.setText(cad)
@@ -737,12 +738,11 @@ class MainWindow(QMainWindow):
         loteria.espaciadoCartas=self.item_espaciadoCartas.value()
         #print("Estoy dentro")
         self.nextIndexStacked()
-        hilo=hiloGenerarLoteria()
-        hilo.finished.connect(self.terminado)
-        hilo.progresoText.connect(self.actualizarCadProgresoTabla)
-        hilo.progresoInt.connect(self.actualizarIntProgresoTabla)
-        hilo.start()
-        hilo.wait()
+        self.hiloL=hiloGenerarLoteria()
+        self.hiloL.finished.connect(self.terminado)
+        self.hiloL.progresoText.connect(self.actualizarCadProgresoTabla)
+        self.hiloL.progresoInt.connect(self.actualizarIntProgresoTabla)
+        self.hiloL.start()
 
     def actualizarCadProgresoTabla(self,cad:str):
         self.item_progresoTabla.setText(cad)
