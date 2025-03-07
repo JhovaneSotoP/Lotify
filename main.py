@@ -1,6 +1,6 @@
 import sys
 import os
-from PyQt5.QtWidgets import QApplication, QMainWindow, QStackedWidget, QPushButton,QDoubleSpinBox,QSpinBox,QFileDialog,QLabel,QColorDialog,QLineEdit, QFontComboBox,QTableWidget,QTableWidgetItem, QProgressBar
+from PyQt5.QtWidgets import QApplication, QMainWindow, QStackedWidget, QPushButton,QDoubleSpinBox,QSpinBox,QFileDialog,QLabel,QColorDialog,QLineEdit, QFontComboBox,QTableWidget,QTableWidgetItem, QProgressBar,QCheckBox
 from PyQt5 import uic
 from PyQt5.QtCore import QThread,pyqtSignal,Qt
 from PyQt5.QtGui import QPixmap
@@ -119,8 +119,9 @@ class hiloGenerarLoteria(QThread):
     progresoText=pyqtSignal(str)
     progresoInt=pyqtSignal(int)
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, demoBool=False):
         super().__init__(parent)
+        self.demoBool=demoBool
     
     def run(self):
         self.progresoText.emit("Comenzando...")
@@ -131,6 +132,9 @@ class hiloGenerarLoteria(QThread):
             loteria.agregarTabla(n)
             self.progresoInt.emit(int((index+1)*100/loteria.noTablas))
             self.progresoText.emit(f"{index+1}/{loteria.noTablas} tablas colocadas.")
+        
+        if self.demoBool:
+            loteria.demo.save()
         loteria.archivo.save()
 
 
@@ -331,6 +335,9 @@ class MainWindow(QMainWindow):
         self.item_salida=self.findChild(QPushButton,"seleccionarSalida")
         self.item_pathSalida=self.findChild(QLabel,"pathSalida")
         self.item_salida.clicked.connect(self.seleccionarPathSalida)
+
+        self.item_demo=self.findChild(QCheckBox,"demo")
+        self.item_instrucciones=self.findChild(QCheckBox,"instrucciones")
 
         self.item_btnTerminar=self.findChild(QPushButton,"terminar")
         self.item_btnTerminar.clicked.connect(self.generarLoteria)
@@ -712,12 +719,15 @@ class MainWindow(QMainWindow):
 
     def configuracionFinal(self):
         self.nextIndexStacked()
-        cartasMax=math.comb(len(pathCartas),loteria.noTablas*loteria.noTablas)
+        cartasMax=math.comb(len(pathCartas),loteria.elementosLado*loteria.elementosLado)
+        if cartasMax>2147483646:
+            cartasMax=2147483646
         self.item_noTablas.setMaximum(cartasMax)
-        if cartasMax>200:
+        if cartasMax>250:
             self.item_noTablas.setValue(200)
         else:
             self.item_noTablas.setValue(cartasMax)
+
         loteria.actualizarCartas(pathCartas)
 
     def seleccionarPathSalida(self):
@@ -738,7 +748,7 @@ class MainWindow(QMainWindow):
         loteria.espaciadoCartas=self.item_espaciadoCartas.value()
         #print("Estoy dentro")
         self.nextIndexStacked()
-        self.hiloL=hiloGenerarLoteria()
+        self.hiloL=hiloGenerarLoteria(demoBool=self.item_demo.isChecked())
         self.hiloL.finished.connect(self.terminado)
         self.hiloL.progresoText.connect(self.actualizarCadProgresoTabla)
         self.hiloL.progresoInt.connect(self.actualizarIntProgresoTabla)

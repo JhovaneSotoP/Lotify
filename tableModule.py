@@ -282,7 +282,13 @@ class lotteryTable():
         ancho=self.ancho*72
         alto=self.alto*72
         self.archivo=canvas.Canvas(path,pagesize=(ancho,alto))
+        
+
+        pathDemo=path.replace(".pdf","_demo.pdf")
+        self.demo=canvas.Canvas(pathDemo,pagesize=(ancho,alto))
+
         self.colocarCartas()
+        self.banDemoDef=True
         
     
     def colocarCartas(self):
@@ -298,6 +304,7 @@ class lotteryTable():
         x=bordeImpresion-(ancho+(2*bordeCartas))
         y=self.realY(bordeImpresion)-alto
 
+        banDemo=True
         #colocar cartas
         for n in self.cartas:
             
@@ -311,7 +318,11 @@ class lotteryTable():
                 x=bordeImpresion
                 y=self.realY(bordeImpresion)-alto
                 self.archivo.showPage()
+                banDemo=False
             self.archivo.drawImage(n,x+bordeCartas,y-bordeCartas,ancho,alto)
+
+            if banDemo:
+                self.demo.drawImage(n,x+bordeCartas,y-bordeCartas,ancho,alto)
 
             #colocae punteado
             x1=x
@@ -330,11 +341,25 @@ class lotteryTable():
             self.archivo.line(x1,y1,x1,y2)
             #linea lateral derecha
             self.archivo.line(x2,y1,x2,y2)
+
+            if banDemo:
+                self.demo.setDash(3,3)
+
+                #linea inferior
+                self.demo.line(x1,y1,x2,y1)
+                #linea superior
+                self.demo.line(x1,y2,x2,y2)
+                #linea lateral izquierda
+                self.demo.line(x1,y1,x1,y2)
+                #linea lateral derecha
+                self.demo.line(x2,y1,x2,y2)
     
     def agregarTabla(self,indices):
         ppp=72
         self.archivo.showPage()
         random.shuffle(indices)
+
+
         
         #colocar fondo
         if(self.fondo!=""):
@@ -346,6 +371,9 @@ class lotteryTable():
                 x = 0
                 y = self.realY(0)
                 self.archivo.drawImage(path,0,0,self.ancho*ppp,self.alto*ppp)
+                if self.banDemoDef:
+                    self.demo.drawImage(path,0,0,self.ancho*ppp,self.alto*ppp)
+
             except FileNotFoundError:
                 print(f"El archivo '{self.logo}' no se encuentra.")
             except PermissionError:
@@ -360,15 +388,27 @@ class lotteryTable():
         rgb=hex_to_rgb(self.colorLetra)
         self.archivo.setFillColorRGB(*rgb)
 
+        if self.banDemoDef:
+            self.demo.showPage()
+            self.demo.setFont("Fuente", self.tamanoLetra)
+            self.demo.setFillColorRGB(*rgb)
+            
+
         y=(self.alto*ppp)-(self.bordeImpresion*ppp)-(self.espacioHeader*ppp)+(((self.espacioHeader*ppp)-(self.tamanoLetra*0.8))/2)
         self.archivo.drawString(self.bordeImpresion*ppp, y, self.encabezado)
+
+        if self.banDemoDef:
+            self.demo.drawString(self.bordeImpresion*ppp, y, self.encabezado)
         
-        cad="Tabla #"+str(self.contadorTabla)
+        cad="Tabla "+str(self.contadorTabla)
         
         ancho=pdfmetrics.stringWidth(cad,"Fuente",self.tamanoLetra)
         x=(self.ancho*ppp)-ancho-(self.bordeImpresion*ppp)
         
         self.archivo.drawString(x, y, cad)
+
+        if self.banDemoDef:
+            self.demo.drawString(x, y, cad)
 
         #modificar al lienzo las coordenadas
         coordsPX=[]
@@ -378,6 +418,8 @@ class lotteryTable():
         #colocar imagenes
         for indice,k in enumerate(coordsPX):
             self.archivo.drawImage(self.cartas[indices[indice]],k[0],k[1],self.anchoCartas*ppp,self.altoCartas*ppp)
+            if self.banDemoDef:
+                self.demo.drawImage(self.cartas[indices[indice]],k[0],k[1],self.anchoCartas*ppp,self.altoCartas*ppp)
         
 
         #Colocar logo
@@ -390,22 +432,19 @@ class lotteryTable():
                 x = ((self.ancho*ppp)-(logo.width))//2
                 y = (self.alto*ppp)-(self.bordeImpresion*ppp)-(self.espacioHeader*ppp)+(((self.espacioHeader*ppp)-logo.height)/2)
                 self.archivo.drawImage(path,x,y,logo.width,logo.height)
+
+                if self.banDemoDef:
+                    self.demo.drawImage(path,x,y,logo.width,logo.height)
             except FileNotFoundError:
                 print(f"El archivo '{self.logo}' no se encuentra.")
             except PermissionError:
                 print(f"Permiso denegado al intentar acceder al archivo '{self.logo}'.")
             except Exception as e:
                 print(f"Error inesperado: {e}")
-        #marcar borde de impresion
-        """ x1=0
-        x2=self.ancho*ppp
-        y1=(self.alto*ppp)-(self.bordeImpresion*ppp)
-        y2=y1-(self.espacioHeader*ppp)
 
-        self.archivo.line(x1,y1,x2,y1)
-        self.archivo.line(x1,y2,x2,y2) """
         
         self.contadorTabla+=1
+        self.banDemoDef=False
 
     def sizeCartas(self):
         data=(self.anchoCartas,self.altoCartas)
