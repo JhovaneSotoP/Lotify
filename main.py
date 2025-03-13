@@ -119,14 +119,21 @@ class hiloGenerarLoteria(QThread):
     progresoText=pyqtSignal(str)
     progresoInt=pyqtSignal(int)
 
-    def __init__(self, parent=None, demoBool=False):
+    def __init__(self, parent=None, demoBool=False,insBool=True):
         super().__init__(parent)
         self.demoBool=demoBool
+        self.insBool=insBool
     
     def run(self):
+        self.progresoInt.emit(0)
         self.progresoText.emit("Comenzando...")
         loteria.generarLoteria(pathSalida)
+        if self.insBool:
+            loteria.colocarInstrucciones()
+        self.progresoText.emit("Colocando cartas...")
+        loteria.colocarCartas()
         self.progresoText.emit("Generando tablas")
+        
         index=indextablas(loteria.noTablas,len(pathCartas),(loteria.elementosLado*loteria.elementosLado))
         for index,n in enumerate(index):
             loteria.agregarTabla(n)
@@ -748,7 +755,7 @@ class MainWindow(QMainWindow):
         loteria.espaciadoCartas=self.item_espaciadoCartas.value()
         #print("Estoy dentro")
         self.nextIndexStacked()
-        self.hiloL=hiloGenerarLoteria(demoBool=self.item_demo.isChecked())
+        self.hiloL=hiloGenerarLoteria(demoBool=self.item_demo.isChecked(),insBool=self.item_instrucciones.isChecked())
         self.hiloL.finished.connect(self.terminado)
         self.hiloL.progresoText.connect(self.actualizarCadProgresoTabla)
         self.hiloL.progresoInt.connect(self.actualizarIntProgresoTabla)

@@ -1236,6 +1236,9 @@
               <property name="text">
                <string>Agregar instrucciones</string>
               </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
              </widget>
             </item>
             <item>

@@ -5,6 +5,9 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
 from reportlab.lib import colors
 from generalFuntions_module import encontrar_archivo_fuente,hex_to_rgb
+from reportlab.platypus import SimpleDocTemplate, Paragraph
+from reportlab.lib.styles import getSampleStyleSheet
+
 
 class lotteryTable():
     def __init__(self):
@@ -287,10 +290,49 @@ class lotteryTable():
         pathDemo=path.replace(".pdf","_demo.pdf")
         self.demo=canvas.Canvas(pathDemo,pagesize=(ancho,alto))
 
-        self.colocarCartas()
+        
         self.banDemoDef=True
         
-    
+    def colocarInstrucciones(self):
+        # Título
+        self.archivo.setFont("Helvetica-Bold", 16)
+        self.archivo.drawString(190, 750, "Instrucciones para jugar a la Lotería")
+        
+        # Objetivo del juego
+        self.archivo.setFont("Helvetica-Bold", 12)
+        self.archivo.drawString(72, 720, "Objetivo del juego")
+        self.archivo.setFont("Helvetica", 12)
+        self.archivo.drawString(72, 705, "El objetivo es ser el primero en completar una línea (horizontal, vertical o diagonal) en la")
+        self.archivo.drawString(72, 690, "tabla y gritar “¡Lotería!” para ganar.")
+        
+        # Materiales
+        self.archivo.setFont("Helvetica-Bold", 12)
+        self.archivo.drawString(72, 665, "Materiales")
+        self.archivo.setFont("Helvetica", 12)
+        self.archivo.drawString(72, 650, " 1. Tablas de juego: Cada jugador tiene una tabla con diferentes imágenes.")
+        self.archivo.drawString(72, 635, " 2. Cartas: El cantor tiene un mazo con las mismas imágenes que las tablas.")
+        self.archivo.drawString(72, 620, " 3. Marcadores: Para marcar las imágenes en la tabla.")
+        
+        # Cómo jugar
+        self.archivo.setFont("Helvetica-Bold", 12)
+        self.archivo.drawString(72, 595, "Cómo jugar")
+        self.archivo.setFont("Helvetica", 12)
+        self.archivo.drawString(72, 580, " 1. Preparación: Cada jugador recibe una tabla. El cantor mezcla las cartas.")
+        self.archivo.drawString(72, 565, " 2. Inicio: El cantor saca una carta al azar y la muestra. Los jugadores marcan la imagen si")
+        self.archivo.drawString(72, 550, " la tienen en su tabla.")
+        self.archivo.drawString(72, 535, " 3. Marcado: Los jugadores siguen marcando las imágenes que el cantor saque.")
+        self.archivo.drawString(72, 520, " 4. Ganar: El primer jugador en completar una línea (horizontal, vertical o diagonal) grita")
+        self.archivo.drawString(72, 505, " “¡Lotería!”. El cantor verifica y el jugador gana.")
+        self.archivo.drawString(72, 400, " 5. Repetir: Después de ganar, se puede comenzar una nueva ronda.")
+        
+        self.archivo.drawImage("data/assets/items.png",200,415,215,84)
+        # Regla adicional
+        self.archivo.setFont("Helvetica-Bold", 12)
+        self.archivo.drawString(72, 375, "Regla adicional")
+        self.archivo.setFont("Helvetica", 12)
+        self.archivo.drawString(72, 360, " • Lotería Completa: Si prefieres, puedes jugar para completar toda la tabla y gritar “¡Lotería ")
+        self.archivo.drawString(72, 345, "   Completa!” al lograrlo.")
+        self.archivo.showPage()
     def colocarCartas(self):
         """
         Coloca las cartas en hojas con el formato requerido para imprimir
@@ -459,7 +501,6 @@ class lotteryTable():
 if __name__=="__main__":
     prueba=lotteryTable()
     prueba.actualizarLogo(r"C:\Users\adria\Downloads\WhatsApp Image 2024-12-03 at 9.41.54 PM.jpeg")
-    prueba.imagen.show()
 
     listaT=[]
     for n in range(20):
