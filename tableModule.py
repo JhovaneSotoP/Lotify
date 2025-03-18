@@ -343,6 +343,14 @@ class lotteryTable():
 
         bordeImpresion=self.bordeImpresion*72
 
+
+        anchoUtilizable=(self.ancho*72)-(bordeImpresion*2)
+
+        espacioPorCarta=(bordeCartas*2)+ancho
+        cartasPorAncho=anchoUtilizable//espacioPorCarta
+
+        espaciadoEntreCartas=(anchoUtilizable-(cartasPorAncho*espacioPorCarta))/(cartasPorAncho+1)
+
         x=bordeImpresion-(ancho+(2*bordeCartas))
         y=self.realY(bordeImpresion)-alto
 
@@ -350,14 +358,14 @@ class lotteryTable():
         #colocar cartas
         for n in self.cartas:
             
-            x+=ancho+(bordeCartas*2)
-
+            x+=ancho+(bordeCartas*2)+espaciadoEntreCartas
+            print(x)
             if(x+(bordeCartas*2)+(bordeImpresion*2))+ancho>(self.ancho*72):
-                x=bordeImpresion
+                x=bordeImpresion+espaciadoEntreCartas
                 y-=(alto+(bordeCartas*2))
             
             if(y-bordeImpresion)<0:
-                x=bordeImpresion
+                x=bordeImpresion+espaciadoEntreCartas
                 y=self.realY(bordeImpresion)-alto
                 self.archivo.showPage()
                 banDemo=False
@@ -510,5 +518,6 @@ if __name__=="__main__":
 
     prueba.actualizarCartas(listaT)
     prueba.generarLoteria()
+    prueba.colocarCartas()
     prueba.agregarTabla([0, 1, 3, 4, 6, 7, 8, 9, 11, 12, 13, 14, 15, 17, 18, 19])
     prueba.archivo.save()

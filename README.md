@@ -1,4 +1,4 @@
-# Lotify v1.1.2
+# Lotify v1.1.3
 Este script desarrollado en python, tiene como objetivo generar tarjetas y cartas de una tradicional loteria mexicana a partir de un listado de imágenes, los detalles se muestran a  continuación.
 
 ## Cómo usarlo
@@ -19,5 +19,5 @@ Antes de empezar, asegúrate de tener lo siguiente instalado en tu sistema:
 - [x] Mejorar el borde del texto de las imagenes (Esperando para mejorar calidad de textos).
 - [ ] Mejorar UI.
 - [x] Agregar modo para generar instrucciones de juego y un demo.
-- [ ] Centrar las imagenes de las cartas individuales en el archivo final.
+- [x] Centrar las imagenes de las cartas individuales en el archivo final.
 - [x] Corregir error de progreso.
