@@ -355,12 +355,16 @@ class lotteryTable():
         y=self.realY(bordeImpresion)-alto
 
         banDemo=True
+
+        print(f"tamaño carta:{espacioPorCarta}")
+        print(f"Cartas:{cartasPorAncho}")
+        print(f"espaciado:{espaciadoEntreCartas}")
+
         #colocar cartas
         for n in self.cartas:
             
             x+=ancho+(bordeCartas*2)+espaciadoEntreCartas
-            print(x)
-            if(x+(bordeCartas*2)+(bordeImpresion*2))+ancho>(self.ancho*72):
+            if(x+espacioPorCarta)>(self.ancho*72):
                 x=bordeImpresion+espaciadoEntreCartas
                 y-=(alto+(bordeCartas*2))
             
