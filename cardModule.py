@@ -26,7 +26,7 @@ class lotteryCard():
         self.grosorBordeInferior=2
         self.colorBordeInferior="#000000"
 
-        self.textoInferior="DRAGON"
+        self.textoInferior="DRAGON DE TIERRA LEGENDARIO DRAGON DE TIERRA LEGENDARIO DRAGON DE TIERRA LEGENDARIO"
         self.colorTextoInferior="#FFFFFF"
 
 
@@ -236,8 +236,26 @@ class lotteryCard():
         font=ImageFont.truetype(self.tipoLetra,self.tamanoLetra)
 
         tam=font.getbbox(self.textoInferior)
+
+        anchoMax=self.ancho*0.8
+
+          
+
+
         tamX=tam[2]-tam[0]
         tamY=tam[3]-tam[1]
+
+        tama=self.tamanoLetra
+        while tamX>anchoMax:
+            print(f"{tamX} y {anchoMax}")
+
+            tama-=1
+            font=ImageFont.truetype(self.tipoLetra,tama)
+            tam=font.getbbox(self.textoInferior)
+            tamX=tam[2]-tam[0]
+            tamY=tam[3]-tam[1]
+
+
 
         posY=self.alto-tamY-self.espaciadoVInferior
 

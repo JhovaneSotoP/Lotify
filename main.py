@@ -142,6 +142,7 @@ class hiloGenerarLoteria(QThread):
         
         if self.demoBool:
             loteria.demo.save()
+        loteria.contadorTabla=1
         loteria.archivo.save()
 
 
@@ -491,7 +492,7 @@ class MainWindow(QMainWindow):
                 temp=os.path.splitext(os.path.basename(n))[0]
                 temp=temp.split("_")
 
-                self.item_tablaImagenes.setItem(count,0,QTableWidgetItem(temp[0]))
+                self.item_tablaImagenes.setItem(count,0,QTableWidgetItem(temp[0].upper()))
 
                 if len(temp)>1:
                     try:
@@ -760,6 +761,8 @@ class MainWindow(QMainWindow):
         self.hiloL.progresoText.connect(self.actualizarCadProgresoTabla)
         self.hiloL.progresoInt.connect(self.actualizarIntProgresoTabla)
         self.hiloL.start()
+        for n in range(self.item_tablaImagenes.rowCount()):
+            self.item_tablaImagenes.removeRow(0)
 
     def actualizarCadProgresoTabla(self,cad:str):
         self.item_progresoTabla.setText(cad)

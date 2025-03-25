@@ -290,6 +290,8 @@ class lotteryTable():
         pathDemo=path.replace(".pdf","_demo.pdf")
         self.demo=canvas.Canvas(pathDemo,pagesize=(ancho,alto))
 
+        self.archivo.setTitle(self.encabezado)
+        self.demo.setTitle("DEMO")
         
         self.banDemoDef=True
         
@@ -454,7 +456,7 @@ class lotteryTable():
         if self.banDemoDef:
             self.demo.drawString(self.bordeImpresion*ppp, y, self.encabezado)
         
-        cad="Tabla "+str(self.contadorTabla)
+        cad="Tabla #"+str(self.contadorTabla)
         
         ancho=pdfmetrics.stringWidth(cad,"Fuente",self.tamanoLetra)
         x=(self.ancho*ppp)-ancho-(self.bordeImpresion*ppp)
