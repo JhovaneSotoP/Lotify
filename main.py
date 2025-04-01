@@ -155,6 +155,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         uipath="gui/mainView.ui"
         uic.loadUi(uipath,self)
+        self.setWindowTitle("Lotify")
         self.load_gui()
     
     def load_gui(self):
@@ -167,6 +168,13 @@ class MainWindow(QMainWindow):
         #Inicio
         self.findChild(QPushButton,"btnIniciar").clicked.connect(self.configuracionTabla)
         self.findChild(QPushButton,"btnSalir1").clicked.connect(self.exit)
+
+        imagenInicio=self.findChild(QLabel,"tituloInicio")
+        pixmap = QPixmap(r"C:\Users\adria\Documents\Desarrollo\Python\Lotify\data\assets\logo.png")  # Reemplaza con la ruta de tu imagen
+        scaled_pixmap = pixmap.scaled(imagenInicio.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        imagenInicio.setPixmap(scaled_pixmap)
+
+        self.findChild(QLabel,"tituloInicio")
 
         #Configuraxion de tablas
         self.findChild(QPushButton,"btnContinuar1").clicked.connect(self.nextIndexStacked)
@@ -761,8 +769,6 @@ class MainWindow(QMainWindow):
         self.hiloL.progresoText.connect(self.actualizarCadProgresoTabla)
         self.hiloL.progresoInt.connect(self.actualizarIntProgresoTabla)
         self.hiloL.start()
-        for n in range(self.item_tablaImagenes.rowCount()):
-            self.item_tablaImagenes.removeRow(0)
 
     def actualizarCadProgresoTabla(self,cad:str):
         self.item_progresoTabla.setText(cad)

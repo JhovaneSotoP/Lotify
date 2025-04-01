@@ -487,10 +487,10 @@ class lotteryTable():
                 logo.save(path)
                 x = ((self.ancho*ppp)-(logo.width))//2
                 y = (self.alto*ppp)-(self.bordeImpresion*ppp)-(self.espacioHeader*ppp)+(((self.espacioHeader*ppp)-logo.height)/2)
-                self.archivo.drawImage(path,x,y,logo.width,logo.height)
+                self.archivo.drawImage(path,x,y,logo.width,logo.height,path)
 
                 if self.banDemoDef:
-                    self.demo.drawImage(path,x,y,logo.width,logo.height)
+                    self.demo.drawImage(path,x,y,logo.width,logo.height,path)
             except FileNotFoundError:
                 print(f"El archivo '{self.logo}' no se encuentra.")
             except PermissionError:

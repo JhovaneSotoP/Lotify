@@ -17,7 +17,8 @@ Antes de empezar, asegúrate de tener lo siguiente instalado en tu sistema:
 ## **Puntos por mejorar**
 - [x] Corregir error al no elegir el path de imagenes a usar.
 - [x] Mejorar el borde del texto de las imagenes (Esperando para mejorar calidad de textos).
-- [ ] Mejorar UI.
+- [x] Mejorar UI.
 - [x] Agregar modo para generar instrucciones de juego y un demo.
 - [x] Centrar las imagenes de las cartas individuales en el archivo final.
 - [x] Corregir error de progreso.
+- [ ] Generar imagenes para publicaciones de redes sociales.
